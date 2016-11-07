@@ -263,7 +263,14 @@ These documents may be pre-annotated with information from other annotation sour
 You will run into instances where multiple implicit arguments clearly co-refer, but where there is no clear mention of who they refer to.  Do not go through and annotate these unless you have at least one non-implicit variable that is part of that chain.  
 
 
+**Don't link implict mentions to very broad general mentions**
+--------------------------------------------------------------
+AMR annotations are full of concepts such as "recommend-01" (used for modal verbs like "should"), where the recommender isn't really clear, but might construed as being "people in  general recommend that...".  "John is funny" can be constued as "People find John funny".    It might be tempting, therefore, if you find a nice generic like "people" or "one" or "everyone", to link up all these implicit arguments to such as generic.  **Resist that urge!**.  Since that is a can of worms, consider it to be explicitly forbidden to link to such terms.
 
+
+**Don't link to implicit arguments of "grammatical" concets**
+-------------------------------------------------------------
+In AMR, we use terms like "recommend-01" and "contrast-01" to refer to very grammaticalized meanings introduced by discourse connectives and modal verbs.  Currently the tool may prompt you with rare arguments that only show up in the more explicit verbal forms -- so that when you see "but he should leave", the contrast-01 verb may provide an implicit "person making the contrast" or the "recommend-01" may provide arguments for who is being recommended to.   Normal within-sentence AMR annotator does not link to these arguments even when a candidate is available in the sentence, and we will therefore continue to not make that link across sentences.
 
 
 Making Set/member relations
@@ -366,6 +373,13 @@ He opened the door
 
 
 
+Instances of "Generic" wiki links
+---------------------------------
+
+Sometimes our "wiki" links will point to things that are not actually unique entities in the world, but are whole classes of things.  The most common of these will be product mentions such as "iPod", where mention of "my iPod" should not refer to owning the whole class of iPod products, but simply owning a single instance of an iPod.  In other words; if you have a discussion of people's different iPods, you may have many different identity chains, all of which have the same link to "iPod". 
+
+These will therefore be preannotated incorrectly, based on this assumption that :wiki links also imply coreference.  in such as Case, delete those general identity chains and replace them with an "InstanceOfGenericWiki" link, available from Schema > Identity in the menu. 
+
 Part III: Details 
 ================
 
@@ -373,12 +387,12 @@ Part III: Details
 Discourse Phenomena
 -------------------
 
-### Anaphora referring to a mentioned event
+### Anaphoric Demonstratives and Discourse Anaphora, referring to a mentioned event(s)
 
 
 In a given document, you might run into phases like "I didn't want to do that" or "that was fun", in which words and phrases like "do so", "that", "do that", etc. will refer back to prior events in context. 
 
-The core thing to remember is that if a variable clearly links to a single event, you should mark it as coreference with that event. For example:
+Sometimes these are easy.  If they refer to a real event, that event has a single clear variable, you should just mark it as coreferent using "IdentityChain". For example:
 ```
 Bob threatened to leave
 (t / threaten-01
@@ -387,7 +401,19 @@ Bob threatened to leave
             :ARG0 p))
 ```
 
-There are a whole range of ways that this might be "referred to", and those might have different AMR treatments, such as:
+```
+Then he actually did so
+(d / do-02
+      :ARG0 (h / he)
+      :ARG1 (s / so)
+      :mod (a / actual))
+```
+In this case we would link "d" in this AMR to "l" in the prior AMR.  
+
+
+**Which part of a "do that" or "do so" phases is the 'event'?**
+
+There are a whole range of ways that this might be "referred to", and those might have different AMR treatments.  Which variable to you link to in the following AMRs? 
 ```
 Then he actually did so
 (d / do-02
@@ -416,9 +442,7 @@ Did it actually happen?
       :mod (a / actual))
 ```
 
-If it's actually referring to the same thing, DO link them together.  Since the 'anaphoric' phrase like 'do so' or 'do that' will often be composed of many AMR concepts, we'll need to have rules for which one to use:
-
-For phases with a demonstrative like "this" or "that", or with "it", such as  "do that" , "that happened", "do it" , etc., use the demonstrative or pronoun:
+For phases with a demonstrative like "this" or "that", or with "it", such as  "do that" , "that happened", "do it" , etc., use the demonstrative or pronoun ('that' or 'it'):
 ```
 "If they that..."
 (d / do-02
@@ -427,18 +451,18 @@ For phases with a demonstrative like "this" or "that", or with "it", such as  "d
   ....)
 ```
 
-For phases with a support verb like "do-02" and "so", use the predicate rather than the "so":
+For phases with a support verb like "do-02" and "so", use the predicate "do" rather than pointing to the "so":
 ```
 "If they that..."
 (d / do-02
      :ARG0 (t / they)
-     :ARG1 (t2 / that)
+     :ARG1 (s / so)
   ....)
 ```
 
-### Vague Discourse Demonstratives
+**What if there isn't a single clear antecedent?**
 
-Consider an example like
+Often, something like "that" or "do so" does not refer to a single sentence, but extends across a whole range of the discourse.  A simplistic example might encompass a number of separate events:
 
 ```
 "He stole money from people."
@@ -455,22 +479,24 @@ Consider an example like
             :ARG1 (p / person :name (n / name :op1 "Bill"))
             :ARG2 (i2 / it)))
 
-"That's what he's charged with"
+"That's what I don't like"
 (t / that
-      :ARG2-of (c / charge-05
-            :ARG1 (h / he)))
+      :ARG2-of (l / like-01 :polarity -
+            :ARG1 (i / i)))
 ```
-For such a small set of options, we may want to actually represent that as Set/Member relationship between "that" and the things that constitute the "that" relationship, the "steal-01" and "try-01".  But consider that this a slippery slope; instead of the first two sentences, one might have had a whole discourse describing the details of someone's crime; in that context, we would definitely not want 'that' to contain all the mentions in that entire discourse. 
 
-Because of that slippery slope, there needs to be a simple cut-off.  For simplicity, we'll just use two rules:
-- If there's a single thing (or "and" instance) that "that" refers to, make an identity chain and link them together. 
-- If the term refers equally to a very cleanly defined Set of different factors of the same type, constituting a stretch of prior AMRs (roughly 5 or less) without any AMRs that are tangential or details, and if you can genuinely view it as a Set with those members, then mark it as Set/Member.
-- Otherwise, do not annotate it as anything
-**AMR conference call discussion point** alternatively: - Otherwise, make a special "PriorDiscourse" chain, and only add this demonstrative to it.  
+**IF** it is viable to capture the set of variables that the "that" is referring to, we want to do so.  We make a "Set/Member" link, and treat "that" or "do so" as the superset, and treat the actual things that define that term as the members of the set.  In this case, the members would be "steal-01" and "try-01".  
 
-### Vague Discourse Reference with Implicit Arguments
+However, sometimes it will **not** be easy for you to link to these.  For the same of consistency, a valid set of prior discourse units must pass these tests:
+- It must be a contiguous set of prior sentences
+- It must be the top variables of each AMR
+- it should not encompass more than five prior AMRs. 
 
-Consider out of context a sentence like:
+We acknowledge that these may seem arbitrary, but we want to avoid letting you annotate huge spans of prior discourse. 
+
+**What if there is a discourse context with an implicit argument?**
+
+Consider a sentence like:
 ```
 But we left early
 (c / contrast-01
@@ -478,7 +504,7 @@ But we left early
             :ARG0 (w / we)
             :time (e / early)))
 ```
-This will show up in the Anafora tool as having (amongst other implicit arguments) an argument for the "ARG1" of contrast -- the thing that "but" is contrasting with:
+This will show up in the Anafora tool as having an argument for the "ARG1" of contrast :
 
 ```
 But we left early
@@ -489,14 +515,8 @@ But we left early
             :time (e / early)))
 ```
 
-Like the rules for reference using "that" and other such terms above, you should leave these completely alone if they don't have a clear referent or refer to a small, tractable number of events, using the definition of "small and tractable" that we're assuming above for "that".  
+In such a case, you **can** feel free to make a Set/Member or IdentityChain relationship referring to other mentions, assuming it passses the rules mentioned above. 
 
-**AMR conference call discussion point** alternatively: - It is does not fit that criteria, make a special "PriorDiscourse" chain, and only add this demonstrative to it.  
-
-True generics (synonymous with "one","everyone") should not be linked to implicits
-----------------------------------------------------------------------------------
-
-AMR annotations are full of concepts such as "recommend-01" (used for modal verbs like "should"), where the recommender isn't really clear, but might construed as being "people in  general recommend that...".  "John is funny" can be constued as "People find John funny".    It might be tempting, therefore, if you find a nice generic like "people" or "one" or "everyone", to link up all these implicit arguments to such as generic.  **Resist that urge!**.  Since that is a can of worms, consider it to be explicitly forbidden to link to such terms.
 
 Don't link up generics (that you wouldn't link in AMR)
 ------------------------------------------------------
@@ -579,13 +599,11 @@ There are far more important political and economical reasons for military inter
 
 ### Redundant implicit arguments can be left out
 
-We will have a very specific idea of redundant: 
+Imagine that the output of this annotation is a giant graph, where each entity like "Barack Obama" is a node, and each event is alow a node. If there's a document about Obama travelling to Vietnam, the event of him visiting Vietman might be a node as well, with a "travel-01" label and a "go-01" label.  In that graph, the event and "Barack Obama" might be together with all semantic roles we've seen, such as "arg0 of travel-01" and "arg1 of go-01".
 
-An implicit argument is *redundant* if 
-- (A) Its predicate is in a coreference chain
-- (B) There is a prior mention of that predicate using the exact same roleset
-- (C) That identical predicate has the same numbered argument as the implicit argument itself. 
-- (D) There is only one referent (identity chain) that has shown up in that particular role, for that particular roleset, for that predicate's identity chain.
+In that context, if we see another mention of "travel-01", and we link that "travel-01" event to the same event we've been talking about already, adding a link between "Barack Obama" and the implicit agent of "travel-01" might not add any information at all, because we already knnow that that particular entity has a "arg0 of travel-01" relationship to that event.  In that particular instance -- where there is an implicit argument that is completely uninformative and redundant -- we don't need to add that relationship in. 
+
+However, this ONLY applies when we have already seen that exact predicate sense before.  Even if we add a new mention to this same event of traveling to Vietnam, but if we use a new event like "visit-01", we don't know which argument of "visit-01" that he is participating in.
 
 In other words, if we have one part of a document in which one mentions:
 ```
@@ -610,37 +628,7 @@ This will show in our multi-sentence AMR Anafora annotations as:
            :ARG1 (i2 / implicit-entity_bitten))
       :ARG1 (t / they))
 ```      
-If you have linked the two bite-01 instances together, then both ```:ARG0 (i / implicit-biter_agent)``` and ```:ARG1 (i2 / implicit-entity_bitten)``` pass this test, and don't need to be annotated. 
-
-If you are at all uncertain about the identity of the referent, it is best to add this reference in.  We also need to emphasize that this **only** works if you have prior coreferent mentions of the **exact same predicate**.  
-
-To emphasize the reasoning for we need to have seen the **exact same predicate** before, remember that our numbered arguments are *predicate specific*.  You might want to think of an example like "They were worried about the bite" as being defined by their PropBank definitions, like:
-```
-"They were worried about the bite"
-(w / worry-01
-      :ARG0[cause of worrying, troublesome topic] (b / bite-01)
-      :ARG1[worrier] (t / they))
-```
-Basically, an implicit argument annotation allows us to learn that this particular role, -- like ARG0[cause of worrying, troublesome topic] -- applies to the identity chain of that implicit argument.  If we already know *that*, then we don't need to keep annotating it.  If we have something coreferential with "worry" that is a different predicate, then we need to link the "bite" up to the (i / implicit--causer_of_concern), because none of the numbered arguments are coreferential -- we haven't seen them before:
-
-```
-"We assuaged their concerns"
-(a / assuage-01
-      :ARG0 (t / they)
-      :ARG1 (c2 / concern-01 
-            :ARG1 t
-            :ARG0[causer of concern] (i / implicit--causer_of_concern)))
-```
-If instead it was just another mention of "worry-01", then we could declare that we already know that the identity chain of 'worry' has a "ARG0 of worry-01" link to "bite-01", and therefore don't need to mark the additional link again:
-```
-"We assuaged their worries"
-(a / assuage-01
-      :ARG0 (t / they)
-      :ARG1 (c2 / worry-01 
-            :ARG1 t
-            :ARG0[causer of concern] (i / implicit--causer_of_concern)))
-```
-
+If you have linked "bite-01" to the first "bite-01", we don't need to also add in this redudant information for the  ```:ARG0 (i / implicit-biter_agent)``` and ```:ARG1 (i2 / implicit-entity_bitten)```.  
 
 
 What Does a Variable Mean?
@@ -732,27 +720,23 @@ Racially insensitive?
 
 
 
-
-Assertions of Identicality
---------------------------
-
-Hopefully it is clear from the prior guidelines that most "predicative" or "equational" constructions don't actually mean that you should link both mentions into the chain.  However, there is a tiny subset of cases where one really is getting links between two coreference chains, and claiming that those two chains are identical.  This is seen most clearly with things like:
-
-- Clark Kent is Superman!
-- I suspect Ted is the Zodiac killer.
-
-This can occur for cases where one is not named, when there is an ongoing discussion of whoever did a particular thing
-
-- I think mary is my secret santa.
-- People think that OJ is the killer.
-
-We currently do not have a consistent treatment of how such phenomena should be handled in multisentence AMR; for the most part, examples such as the ones above, will already have linked these elements (using either numbered arguments of a predicate, or through a ```:mod``` or ```:domain``` relation), and therefore do not need to be linked together.  However, if you encounter such phenomena, pass them up the chain for consideration. 
-
-
 Part IV: Handling Errors in the AMRs
 ====================================
 
 There are a bunch of issues that you might encounter that are essentially caused by issues in the original AMR annotation.  
+
+Adding an "OpenIssues" link
+---------------------------
+
+If -- and only if -- an annotation error issue is so egregious that you are having trouble annotating the sentence, you can add an "OpenIssue" relation.  This has two fields for referring to concepts ("Thing1" and "Thing2") and a Problem field wherein you can type in the text.  
+
+You can try to annotate *as if* someone is going in and fixing this issue. We will try to go into the actual AMRs and fix these issues directly based on your note.  However, be extremely sparing about these notes; we don't want you to label every single error you run into, but simply every one that seems to completely stop you from correctly annotating the identity phenomena. 
+
+
+Correcting a "wiki" relation
+----------------------------
+
+Occasionally, a ":wiki" link will be simply wrong.  If this is a minor issue, you can ignore it, but sometimes this will cause dramatic issues or errors in the data.  For this case, we have a ```Wiki``` relation, which you can see in the Schema >> Identity >> Wiki relation.  For this situation, find the correct wikipedia link (by going to www.wikipedia.org and finding the correct wiki link ID) and add that to the "wiki" field, and add all members of that chain to the "members" link. 
 
 AMR missed a within-sentence reentrancy
 ---------------------------------------
