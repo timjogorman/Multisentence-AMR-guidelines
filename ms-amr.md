@@ -35,15 +35,11 @@ Part I. Introduction
 
 You should already be familiar with our [AMR annotations](https://github.com/amrisi/amr-guidelines/blob/master/amr.md), which capture meaning within the sentence.  AMR captures a bunch of important within-sentence coreference decisions, but sticks to the sentence alone.  Here we will be trying to extend those policies for within-sentence coreference to the whole document, in order to build up a bigger, unified representation of the AMR document.
 
-The Core Task
--------------
 
+How AMR normally works:
+-----------------------
 
-
-Normal "within-sentence" AMR annotation captures explicit coreference and "implicit argument" coreference:
-----------------------------------------------------------------------------------------------------------
-
-Remember that AMR does all within-sentence coreference, regardless of why you know that information.  This means that sometimes in AMR, we are merging two explicit mentions into the same AMR variable.  Remember that "He boy wants the girl to believe him" is AMRed as follows, with the "boy" and "him" merged together into ```(b / boy)```:
+Remember that AMR does all within-sentence coreference, regardless of why you know that information.  This means that sometimes in AMR, we are merging two explicit mentions into the same AMR variable.  Remember that "The boy wants the girl to believe him" is AMRed as follows, with the "boy" and "him" merged together into ```(b / boy)```:
 
 ```
 (w / want-01
@@ -66,8 +62,7 @@ As another example, consider the two different instances of "b" in the following
             :ARG4 s
             :time (d3 / date-entity :weekday "Tuesday")))
 ```
-
-If this sentence were to be split into two sentences, our within-sentence annotations would lose some of the information that we had in the first example -- we would lose understanding of the boy's destination, because we weren't linking across sentences:
+In this example, AMR does not simply link explicit mentions, but also links things that are pragmatically inferrable, such as linking "ARG4" to "s".  If this sentence were to be split into two sentences, our normal within-sentence AMR annotations would lose some of the information that we had in the first example -- we would lose understanding of the boy's destination, because we weren't linking across sentences:
 
 ```
 "The boy ran off to California."
@@ -81,7 +76,10 @@ If this sentence were to be split into two sentences, our within-sentence annota
       :time (d3 / date-entity :weekday "Tuesday"))      
 ```
 
-Two things are different between separated sentences like this.  One is that we lose the link between *explicit* mentions; we want to have a link between "boy" in sentence 1 and "he" in sentence 2.  The second thing we lose is the *implicit* information that is normally annotated in AMR.  So for example, we lose the link between "state" in the first sentence and the **:ARG4** of arrive-01 in the second sentence.  
+We would also, of course, lose the explicit link between "boy" and "he", which we would also want to have. 
+
+This annotation extends that annotation across sentence boundaries
+------------------------------------------------------------------
 
 You can view this annotation as simply *bringing that information back in*.  For explicitly mentioned arguments, that means linking together arguments like "boy" and "he" into "identity chains".  
 
@@ -95,6 +93,9 @@ For implicit information, that means adding links to that "implicit" role.  We d
 
 This allows you to re-create what we were doing with "re-entrancies" in a normal AMR annotation; you can then link "state" in the first AMR to the implicit "**ARG4**" in the second AMR. 
 
+
+Additional Kind of Links
+------------------------
 
 Finally, AMR will sometimes mark the relationships that hold between different objects when they are not identical, but related due to being members of a larger set or parts of a larger whole. For example, a single-sentence AMR for the following sentence might look as follows, with "include-91" capturing a set relationship showing that the individual cat "Mittens" is part of a set of 3 cats:
 ```
@@ -120,8 +121,8 @@ If we split this up into "John had three cats.  One cat was named Mittens", then
 The need for this kind of relationship gives us our third task: marking Whole/Part and Set/Member relations between concepts.  This gives us a richer understanding of the document itself. 
 
 
-We are doing three things in multisentence AMR:
------------------------------------------------
+How this is done in ms-AMR annotation
+-------------------------------------
 
 To summarize the above, we are doing three things in this annotation:
 
@@ -129,9 +130,6 @@ To summarize the above, we are doing three things in this annotation:
 - Putting implicit numbered arguments into those coreference chains
 - Linking set/member and part/whole relations between variables
 
-
-Walking through some examples
------------------------------
 
 We will accomplish this by using a tool that works on top of the AMR annotations, Anafora. Because of the Anafora tool, each indexed concept with an AMR will have a little colored box, which we will add into coreference chains to do our annotations.  For example, the following AMR will be represented in Anafora as follows: 
 
@@ -171,13 +169,30 @@ We are focusing on making "IdentityChain" links between all concepts that refer 
 
 These IdentityChain elements can contain all instances of an identity chain, and we want you to focus on getting ALL coreferent variables into the same chain.  That includes both all variables and all "implicit argument" concepts. 
 
+In prototypical cases -- such as clearly anaphoric pronominal mentions, linking named entities, etc. -- this will be a clear case.  This will be more complicated when we get into implicit arguments, coreferent events, and other cases where its harder to concretely know "what is being referred to".  This document will contain a number of guidelines and edge cases, but we want you do remember that a fundamental guiding rule for this annotation is that we are trying to make this behave like normal, within-sentence AMR annotation. Because of that, follow the follow rule whenever your particular case is not handled in the guidelines:
 
+**Universal Rule:** If in doubt, imagine that the sentences you are dealing with are all a giant run-on sentence.  Would you represent these using the same variable, using a re-entrancy?
+
+A number of special cases to keep track of are listed below:
+
+
+**Different "facets" of the same thing vs Subevent / Set-Member relations**
+
+When we tell you to get things that "refer to" the same thing, there are two kinds of situations that seem "close" to being the same thing. One kind of thing is situations where the same thing is being referred to, but in completely different terms.  For example, two people with different political stances might be referring to the same  politician, but one might use their name, and one might call them a "devil".  Since they are referring to the same entity, the fact that they use different ways of framing does not matter; it should all be in the same identity chain.
+
+Let's say you see the AMRs for "*Bill went to Trader Joes. The fool forgot to buy cookie butter.*"  There will be a "(f / fool)" and a "(p / person :name (n / name :op1 "Bill")).  While it's true that "(f / fool)" is going more than *merely* referring to Bill, it is nevertheless still referring to Bill, and thus should still be in the reference chain.  
+
+This gets more tricky when we are dealing with events.  If we have a single event -- Obama signing a particular law -- then one AMR might refer to "Obama signed the law on the 22nd", and someone else might say "Obama signed away our freedoms on the 22nd". It's very important for us to know that these are actually referring to the same event!  So make sure that you annotate different framings of the same event as coreferent. 
+
+This differs from instances of events where one mention of an event refers to a larger set of events.  In general, if you know that one event is a subevent of another event, **do not** link them into an identity chain.  If you are talking about one battle within a war, or one incision within an operation, or a particular discussion during a larger meeting, those are related by being what we call "Subevents".  It can sometimes be tempting to conflate these sometimes.  However, AMR instances do not, actually, merge these in AMR, and you should just leave them separate whenever possible.  Other, related annotation projects will actually annotate this "Subevent" data, so it will be cleaner for those projects if you don't consider such phenomena identical.
+
+If what you are handling is actually and instance or a subset of a larger thing being referred to, don't conflate them into the same identity chain!  This will be particularly tricky with subsets, when you are talking about a group and get referents like "some of them...". Use Set/Member (which includes "set-subset" in its meaning) for such things.
 
 
 
 **Do not mark "predicative" assertions about a mention**
 
-It may be obvious that the AMRs for sentence such as "John is foolish", only mention "John" once; foolish is merely a property of "John". Let's say that you get a sentence such as: 
+It may be obvious that the AMRs for sentence such as "John is a fool", we want "fool" to be represented as a separate idea from "John".  Similarly, if we get a sentence such as the following, we do not conflate "f" and "h", as we would lose the entire meaning of what is being claimed:
 
 ```
 Sally claimed that he was a fool
@@ -186,7 +201,8 @@ Sally claimed that he was a fool
       :ARG1 (f / fool
             :domain (h / he)))
 ```
-If you link "he" to an identity chain, *do not add "fool" to that chain*.  We already know what "fool" is in relation to John, as the ":domain" relation.  
+
+If you link "he" to an identity chain, *do not add "fool" to that chain*.  We already know what "fool" is in relation to John, as the ":domain" relation.  (This contrasts with examples in the above section, such as "the fool left early", where we may want to link "fool" to "John"). 
 
 The same issue often comes up with titles and relational labels, such as those provided by "have-org-role-91":
 ```
@@ -230,19 +246,6 @@ Sally claimed that he was a fool
 Try to use this heuristic if you find yourself wondering whether to annotate multiple mentions in the same sentence.  Actually imagine forming the sentence so that one identity chain is just re-entrant variables of the other.  If that does not seem acceptable, the two variables should not be considered identical. 
 
 
-**Different "facets" of the same thing vs Subevent / Set-Member relations**
-
-When we tell you to get things that "refer to" the same thing, there are two kinds of situations that seem "close" to being the same thing. One kind of thing is situations where the same thing is being referred to, but in completely different terms.  For example, two people with different political stances might be referring to the same  politician, but one might use their name, and one might call them a "devil".  Since they are referring to the same entity, the fact that they use different ways of framing does not matter; it should all be in the same identity chain.
-
-Let's say you see the AMRs for "*Bill went to Trader Joes. The fool forgot to buy cookie butter.*"  There will be a "(f / fool)" and a "(p / person :name (n / name :op1 "Bill")).  While it's true that "(f / fool)" is going more than *merely* referring to Bill, it is nevertheless still referring to Bill, and thus should still be in the reference chain.  
-
-This gets more tricky when we are dealing with events.  If we have a single event -- Obama signing a particular law -- then one AMR might refer to "Obama signed the law on the 22nd", and someone else might say "Obama signed away our freedoms on the 22nd". It's very important for us to know that these are actually referring to the same event!  So make sure that you annotate different framings of the same event as coreferent. 
-
-This differs from instances of events where one mention of an event refers to a larger set of events.  In general, if you know that one event is a subevent of another event, **do not** link them into an identity chain.  If you are talking about one battle within a war, or one incision within an operation, or a particular discussion during a larger meeting, those are related by being what we call "Subevents".  It can sometimes be tempting to conflate these sometimes.  However, AMR instances do not, actually, merge these in AMR, and you should just leave them separate whenever possible.  Other, related annotation projects will actually annotate this "Subevent" data, so it will be cleaner for those projects if you don't consider such phenomena identical.
-
-If what you are handling is actually and instance or a subset of a larger thing being referred to, don't conflate them into the same identity chain!  This will be particularly tricky with subsets, when you are talking about a group and get referents like "some of them...". Use Set/Member (which includes "set-subset" in its meaning) for such things.
-
-
 
 
 **Wikified mentions are automatically linked to each other**
@@ -260,15 +263,13 @@ These documents may be pre-annotated with information from other annotation sour
 You will run into instances where multiple implicit arguments clearly co-refer, but where there is no clear mention of who they refer to.  Do not go through and annotate these unless you have at least one non-implicit variable that is part of that chain.  
 
 
-Every entity with a ":wiki" link is going to be assumed to be linked up with every other mention.  That means that if you have an identity chain for "Bill Clinton", you don't need to link every instance of ```(p / person :name (n / name :op1 "Clinton"))``` together.  However, you still need to make links from at least one :wiki entry to the pronouns, implicit arguments, and other non-wikified mentions of that term that might exist.  
-
-Naturally, if something has ":wiki -", it does not count as wikified for these purposes. 
-
 
 
 
 Making Set/member relations
 ---------------------------
+
+We define "Set/Member" as being roughly the same thing as "include-91"; a situation in which the larger superset is a cluster of instances, and in which the small referent is either a subset or a member of that set.  
 
 **Don't mark Set/member between Identity Chains already linked by "Include-91"**
 
@@ -288,9 +289,31 @@ Naturally, "same type of concept" should be based on your own general understand
 
 You will run into things that, on some technical understanding of meaning, might be sets that contain some large percentage of things mentioned in the document.  This does not mean they should be linked together.  
 
+
+
+**Do not mark Set/Member between wikified entities**
+
+We assume that such relationships are identifiable from a database, and you should not worry about capturing them.  
+
 **You don't need to show that (a / and) is Set/Member with its :opX instances**
 
 There are many times in AMR where one mentions things like "John and Mary to the store" or "China and Japan are competing".  You can assume that "and" loosely encodes a set/member relationship; you don't need to add "set/member" to all of our coordination instances, nor to add it between "they" and "John" in "John and Mary went to the store.  They bought a cat."
+
+**Marking "Sloppy anaphora" relations as member-member relations**
+
+You might be tempted to look at the following kinds of sentences and assume that "do so" or "one" are identical with prior reference.  But are they?:
+
+"Bill asked to be allowed to take the day off.  You should do that too."
+
+"Bill got a new Hyundai. Jane might get one too". 
+
+These are referred to in semantics under a variety of names such as "sloppy" or "same-type" anaphora.  In essence, while these *refer back* to a prior mention, they do not refer to the exact thing being referenced in the prior sentence.  In the first case, the asking event is the one in which Bill is the agent, and in which he is requesting that Bill be allowed to take the day off.  "Do that" postulates a new event with slightly different participants.  We therefore cannot call them the same event. 
+
+Similarly, the new Hyundai that Bill received can only refer to "one" if Jane may buy Bill's Hyundai; otherwise "one" means "another instance of the same type".  
+
+In order to handle these, we can use a tool you already have -- the "Set/Member" relationship.  Unlike other instances of set/member annotation, however, you do not have explicit mention of the "set" itself.  Instead, si	mply mark each item as a separate member, without an explicit set. 
+
+This kind of situation -- particularly with "do" anaphora or "one" -- should be the ONLY situation where you do not have "SuperSet" entry; do not speculate about other situations in which a member-member link might be added.
 
 
 Marking Part/Whole relations
@@ -310,15 +333,20 @@ We are treating this entirely as being "X is a component part of Y".  Even thoug
 
 If someone is part of an organization, then the way to encode that is to link them together with implicit arguments on an instance of "have-org-role-91".  Part/Whole should only be used in the organizational senses when discussing company-company relations, like "Google is part of Alphabet". 
 
-** Note that WHOLE/PART relationships are essentially hierarchical**
+**Note that WHOLE/PART relationships are essentially hierarchical**
 
 These may theoretically have a whole chain of relationships (a hair is part of a dog, a dog is part of a pack, etc.).  If one sentence mentions "I hurt my left hand" and another sentence mentions "More specifically, my thumb hurts", you want to be able to capture that hierarchical structure -- that the thumb is part of the left hand, and that the left hand is part of the person. 
 
-**Part/Whole is not for mere spatial inclusion**
+
+**Do not mark Part/Whole between wikified entities**
+
+We do not want to be annotating information that should be coming out of a database.  Debating whether "barcelona" is part of "spain" is a bit of a waste of annotator time, because we already should have that kind of information in a database.  However, if you see something like "the area", we may indeed want to identify a part/whole link if it's relevant.  
+
+**Part/Whole is not for temporary or irrelevant spatial inclusion**
 
 The particular building your are sitting in might be, in some technical level, a part of your city, of your state, your nation, and the world. But for the most part, AMR has not added inferential annotations for this kind of link, and so we will not be marking those links. Use part/whole only when the individual components truly do amount to parts of a whole -- a building might make up a university campus in a way that justified "part/whole" relation, for example, but doesn't deserve the same part/whole relationship to "the united states" or "the milky way".
 
-One of the tests for this that is expressive of the kind of annotations we want for AMR, is whether the part/whole relation is necessary for understanding what is being referred to (or could be).  If you say "the buildings" and someone asks "which buildings?" and you can answer "the buildings on campus", then you might want to mark the part/whole relationship between buildings and campus.  
+One of the tests for this that is expressive of the kind of annotations we want for AMR, is whether the part/whole relation is necessary for understanding what is being referred to (or could be).  If you say "the buildings" and someone asks "which buildings?" and you can answer "the buildings on campus", then you might want to mark the part/whole relationship between buildings and campus. 
 
 **Part/Whole is most necessary when this compositional part/whole information is needed for reference**
 
@@ -336,23 +364,6 @@ He opened the door
       :ARG1 (d / door))
 ```
 
-
-Marking "Sloppy anaphora" relations as member-member relations
---------------------------------------------------------------
-
-You might be tempted to look at the following kinds of sentences and assume that "do so" or "one" are identical with prior reference.  But are they?:
-
-"Bill asked to be allowed to take the day off.  You should do that too."
-
-"Bill got a new Hyundai. Jane might get one too". 
-
-These are referred to in semantics under a variety of names such as "sloppy" or "same-type" anaphora.  In essence, while these *refer back* to a prior mention, they do not refer to the exact thing being referenced in the prior sentence.  In the first case, the asking event is the one in which Bill is the agent, and in which he is requesting that Bill be allowed to take the day off.  "Do that" postulates a new event with slightly different participants.  We therefore cannot call them the same event. 
-
-Similarly, the new Hyundai that Bill received can only refer to "one" if Jane may buy Bill's Hyundai; otherwise "one" means "another instance of the same type".  
-
-In order to handle these, we can use a tool you already have -- the "Set/Member" relationship.  Unlike other instances of set/member annotation, however, you do not have explicit mention of the "set" itself.  Instead, simply mark each item as a separate member, without an explicit set. 
-
-ONLY do this kind of "headless" set/member annotation when you have an explicit anaphoric relationship such as provided by "do so" or "one"; while one can speculate wildly about which events should fall into the same  class, that is not the job of this annotation. 
 
 
 Part III: Details 
