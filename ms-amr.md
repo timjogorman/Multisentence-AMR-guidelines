@@ -6,6 +6,7 @@
   - [The Core Task](#the-core-task)
   - [These are the same distinctions we make in normal AMR](#these-are-the-same-distinctions-we-make-in-normal-amr)
   - [Walking through some examples](#walking-through-some-examples)
+  - [Starting with the Tool](#starting-with-the-Tool)
 - [Part II: General Guidelines](#part-ii-general-guidelines)
   - [Making Identical Relations](#making-identical-relations)
   - [Making Set/member relations](#making-setmember-relations)
@@ -154,6 +155,17 @@ The "implicit" boxes may be added to these chains just like any other concept.
 You may add relations such as Set/Member by going to the menu selecting it (such as  Schema > Bridging > SetMember).  Then you click on the empty box to the right of "SuperSet" in the right-hand panel, and click on the concept that is your superset.  After that, you click on the box to the right of "MemberOrSubset" and click on any number of members of that set:
 
 ![little prince example 1](lpp-intro3.png "An example of set/member annotation")
+
+
+
+Starting with the Tool
+----------------------
+
+You will need a username and password to access our annotation server.  Once you have that, go to verbs.colorado.edu/anafora-event . Once you've logged in, it should show you a screen such as the following:
+
+![anafora example 1](anafora1.png "What the splash page looks like")
+
+Under Schema select "DAMR"; under "Mode" select "CoreferenceV2", and under "select project" pick ```MultisentenceAMR```. Within the "Training" corpus, you can then select a document to play around with. 
 
 
 Part II: General Guidelines
