@@ -1,7 +1,11 @@
-# Opening Files
+# Opening Files and Starting:
+
+Log into verbs.colorado.edu/anafora-event with the username and password given to you.  Then: 
 
 Schema: "DAMR"
+
 Mode:  "CoreferenceV2"
+
 Corpus: "MultisentenceAMR"
 after that:
 "Training"
