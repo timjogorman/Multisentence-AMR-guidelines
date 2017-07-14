@@ -17,7 +17,6 @@ You should see many files ready for annotation.   We'll focus on two files.  Fir
 ##### If this is your first training document:
 * Start by just reading the document.
 * These are just normal AMRs with additional, light blue "implicit" roles.  Get used to reading them. 
-* Note that wikified entities (they are in dark red) already have coreference chains, and those already have "Nickname" fields.  You can change "Nickname" fields, or ignore them completely -- this is basically a way for you to label identity chains so tht they are easy to keep track of later. 
 
 ##### What do these colors mean? 
 
@@ -26,6 +25,7 @@ You should see many files ready for annotation.   We'll focus on two files.  Fir
 * Light blue amr variables are "implicit roles" that were added for the purpose of this task.  They always have an "op1" that describes what that implicit role means; they are automaticaly added based upon the possible roles in Propbank
 * Green variables are variables that are likely to be entities; they are labeled based on simple heuristic (e.g. being an ARG0 of a predicate)
 * Light, peach-colored variables are for anything that is less likely to be in an identity chain in multi-sentence AMR. **That does not mean that you can ignore these**; it simply means that they are less likely to be relevant.  
+* Note that wikified entities (they are in dark red) already have coreference chains, and those already have "Nickname" fields.
 
 
 ### Walking through some sentences
@@ -43,8 +43,7 @@ The picture that the author saw in that book is mentioned in each of those sente
 
 Once you see the "IdentityChain" on the left panel on the screen, we want to get into what we will call "Mentions mode", where you are adding variables to a chain.  Press "2" -- this will highlight a box next to the word "mentions" on the right.  As long as you are in mentions mode, every AMR variable you click on will be added to that identity chain!  Try it -- add "p / picture" in sentence 2, "i / it" in sentence 3, and "p / picture" from sentence 4.  Then *leave* the mention mode, by pressing ESCAPE.
 
-
-You should see those mentions added to the "mentions" box in the right panel.  Hover your mouse over each mention -- you should that the interface will move to that mention.  You could also write a "Nickname" by clicking in the box above those mentions (usually, you want to do this only when the actual mention names aren't sufficient to distinguish multiple, simlilar identity chains).  
+You should see those mentions added to the "mentions" box in the right panel.  Hover your mouse over each mention -- you should see the interface move to where they are in the document.  You can also click on "Nickname" and add any kind of text you want -- this can be useful for keeping track of identity chains, if you are deaing with multiple identity chains that have similar-looking concept names. 
 
 
 ##### Event Coreference
@@ -63,25 +62,34 @@ You should see those mentions added to the "mentions" box in the right panel.  H
 
 
 
+### Introducing Set/Member links: 
+* These are for encoding that one larger set contains members or subsets within it.
+* We can view reference to kinds (e.g. I love carrots) as a set, which has members which are instances of that set. 
+* Look for one in this document!
+* I'll wait.
+* There's at least one: Sentence 5 talks about all boa constrictors ("boa constrictors swallow their prey whole"), and then sentence 14 has a mention of a single boa constrictor (the one in his drawing).  
+* Go to "Schema", and then "Bridging", and SetMember.
+* Add one mention of the "all boa constrictors" entity to the "SuperSet" box (click on it, or type "1" to enter mention mode for that box); then add the single mention of the "boa constrictor in his drawing" entity to the "MemberOfSubset" box. 
+* If a set has many members, you can add one mention from each to the same SetMember chain!
+* It also doesn't really matter which mentions you pick, if something is in a coreference chain.
 
 
-### wb.p2.5_c2e_006
+### Part/Whole links:
+
+* These work the same, but for meronymy relations
+* I don't see any in this document, but if you needed to make one, you would go to "Schema", and then "Bridging", and "PartWhole".
+
+### Finish this document
+
+* Chapter 1 is about 30 short sentences, and should get you used to the basics of annotation.
+* You want a very long identity chain for the author, and other long-ish chains for things like "Drawing number one" and "drawing number two"
+* Don't worry about getting every detail right here, but start noticing issues!  Keep track of what kinds of decisions you are unsure of!
+* When you are done, move on to the [inital guidelines](ms-amr.md); this will review the interface basics, and start to give you more precise rules about what you allowed to link and when.  When you are done with that, you can open the next file: a copy of ```wb.p2.5_c2e_006``` .
+
+# wb.p2.5_c2e_006
 
 
-##### If this is your first training document:
-* Start by just reading the document.
-* These are just normal AMRs with additional, light blue "implicit" roles.  Get used to reading them. 
-* Note that wikified entities (they are in dark red) already have coreference chains, and those already have "Nickname" fields (nickname fields are **optional** and not used externally; use them however you want in order to keep track of identity chains. Click on a wikified mentions, and the links at the bottom, and get used to finding mentions.  
-
-
-##### Explicit coreference
-
+### Normal practice on identity chains:
 * sentences 7 - 10 have a number of mentions of the Canadian Prime Minister, with four mentions total. Make an IdentityChain (press "U"), access the mentions (press "2"), and scroll through, clicking mentions to him. 
-* When you want to quit adding mentions, press "ESCAPE".
 * There are three clear mentions of his meeting with President Hu, and a fourth that is more marginal "a mere 15 minute meeting with you" that you should be at least considering. 
-
-
-##### Implicit coreference practice
-
-* Implicit roles work the same as normal roles; you are just linking the 
 
