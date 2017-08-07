@@ -806,7 +806,7 @@ All multi-sentence amr nodes are already labeled with the colored boxes showing 
 
 ![Deletion 1](figures/deletion1.png "A text with a missing entity")
 
-To do you, you need highlight the text where that box would be.    Start right before the variable (the letters and numbers before the "/") and highlight the whole word after the "/", like the following:
+To fix it, you first need highlight the text where that box would be.    Start right before the variable (the letters and numbers before the "/", in this case "f") and highlight the whole word after the "/" ("forest")	, like the following:
 
 ![Deletion 2](figures/deletion2.png "A text with a missing entity")
 
