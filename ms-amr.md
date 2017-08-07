@@ -797,3 +797,21 @@ or even as:
 In these cases, we are essentially dealing with two, intertwined reference types -- the result of a drawing event, and the act of drawing.  If at all possible, you should simply assume that these are two separate identity chains, and try to assign each mention to one chain or the other. 
 
 
+Accidentally Deleting Those Colored Boxes
+-----------------------------------------
+
+All multi-sentence amr nodes are already labeled with the colored boxes showing the variables -- with various irrelevant names like "concept", "eventsuggestion", "entitysuggestion", and so forth.  It is possible to delete these.  You never want to do that, but if you accidentally do delete one, don't worry! You can just re-create another entity node in its place -- it won't affect our scripts.  
+
+ So let's say that we have accidentally removed the box for "f / forest" in the training document:
+
+![Deletion 1](figures/deletion1.png "A text with a missing entity")
+
+To do you, you need highlight the text where that box would be.    Start right before the variable (the letters and numbers before the "/") and highlight the whole word after the "/", like the following:
+
+![Deletion 2](figures/deletion2.png "A text with a missing entity")
+
+Once that is highlighted, you want to create a "Concept" node. Go to the Schema menu, go to "Entities", and select "Concept", as follows:
+
+![Deletion 3](figures/deletion3.png "A text with a missing entity")
+
+That's it!  Your document should behave normally, and you can treat it like any other variable.  Don't worry if the color of the box is different from what is was before -- those colors are just for your own use anyways.  
