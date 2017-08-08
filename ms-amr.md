@@ -22,9 +22,9 @@
     - [Redundant implicit arguments can be left out](#redundant-implicit-arguments-can-be-left-out)
   - [What Does a Variable Mean?](#what-does-a-variable-mean)
   - [How much can I consider modality?](#how-much-can-i-consider-modality)
-- [Part IV: Guides for Common Situations](#part-iv-Guides-for-common-situations)
+- [Part IV: Guides for Common Situations](#part-iv-guides-for-common-situations)
   - [Have-org-role-91 and Have-rel-role-91](#have-org-role-and-have-rel-role)
-- [Part V: Handling Errors in the AMRs](#part-iv-handling-errors-in-the-amrs)
+- [Part V: Handling Errors in the AMRs](#part-v-handling-errors-in-the-amrs)
   - [AMR missed a within-sentence reentrancy](#amr-missed-a-within-sentence-reentrancy)
   - [AMR annotation has conflicting :wiki values for the same identity chain](#amr-annotation-has-conflicting-wiki-values-for-the-same-identity-chain)
   - [Removable components in equational clauses](#removable-components-in-equational-clauses)
@@ -741,9 +741,9 @@ Have-Org-Role and Have-rel-role
 
 One of the most common classes of border cases comes from organizational relationships and interpersonal relationships, encoded in AMR with the ```have-org-role-91``` and ```have-rel-role-91``` predicates.  Since we use these to encode most titles and other relationships, the same entity will often have many instances of ```have-org-role-91``` or ```have-rel-role-91```, all expressing very redundant information.
 
-Since these are so common, it's useful to remember a general rule: ***you should almost never link instances of have-org-role-91, have-rel-role-91, or the titles (`:arg2`) that they use.***.  This is a special case of our larger interest in [not encoding redundant information](#Redundant-relationships). 
+Since these are so common, it's useful to remember a general rule: **you should almost never link instances of have-org-role-91, have-rel-role-91, or the titles (`:arg2`) that they use.**	  This is a special case of our larger interest in [not encoding redundant information](#redundant-relationships). 
 
-Another way to say this is that if two instances of ```have-org-role-91``` or ```have-rel-role-91``` are not in conflict, one can assume that they don't need to be explicitly linked.  This leads to the exception to that generalization: only worry about have-org-role-91 and have-rel-role-91 if there are different characterizations of the same relationship (usually: different ```:arg2``` roles).  If one sentence refers to Obama with the title of "Commander in Chief" and another with the title "president", then linking those two predicates with an identity relationship is needed.  ***Otherwise, it is not needed.***
+Another way to say this is that if two instances of ```have-org-role-91``` or ```have-rel-role-91``` are not in conflict, one can assume that they don't need to be explicitly linked.  This leads to the exception to that generalization: only worry about have-org-role-91 and have-rel-role-91 if there are different characterizations of the same relationship (usually: different ```:arg2``` roles).  If one sentence refers to Obama with the title of "Commander in Chief" and another with the title "president", then linking those two predicates with an identity relationship is needed.  **Otherwise, it is not needed.**
 
 Because of the above rules, the one common situation in which you will end up doing coreference annotation regarding ```have-org-role-91``` will be when a relationship is encoded both as a ```have-org-role-91``` relation in some sentences, and as a separate explicit predicate in others.  Predicates such as ```lead-02``` and ```manage-01``` can (and often should) be linked to their corresponding ```have-org-role-91``` relationships.  
 
