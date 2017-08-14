@@ -350,18 +350,19 @@ Like Set/member and "include-91", this is the same as "have-part-91", so don't b
 
 We are treating this entirely as being "X is a component part of Y".  Even though you might be able to say things like "this dance is part of the wedding" or "that incision was part of the surgery", you should **not** consider them part/whole for our purposes.  
 
-**Part/Whole should not be used for organizational membership**
-
-If someone is part of an organization, then the way to encode that is to link them together with implicit arguments on an instance of "have-org-role-91".  Part/Whole should only be used in the organizational senses when discussing company-company relations, like "Google is part of Alphabet". 
-
-**Note that WHOLE/PART relationships are essentially hierarchical**
-
-These may theoretically have a whole chain of relationships (a hair is part of a dog, a dog is part of a pack, etc.).  If one sentence mentions "I hurt my left hand" and another sentence mentions "More specifically, my thumb hurts", you want to be able to capture that hierarchical structure -- that the thumb is part of the left hand, and that the left hand is part of the person. 
-
 
 **Do not mark Part/Whole between wikified entities**
 
 We do not want to be annotating information that should be coming out of a database.  Debating whether "barcelona" is part of "spain" is a bit of a waste of annotator time, because we already should have that kind of information in a database.  However, if you see something like "the area", we may indeed want to identify a part/whole link if it's relevant.  
+
+**Part/Whole should not be used for organizational membership**
+
+If someone is part of an organization, then the way to encode that is to link them together with implicit arguments on an instance of "have-org-role-91".  Part/Whole should only be used in the organizational senses when discussing company-company relations or references to subdivisions within a company (in other words, do not use "part/whole" as a proxy for have-org-role-91), although remember that even those links should not be made between two wikified companies.  For example, if one sentence mentions "Google" and another mentions "the HR department", or one sentence mentions "Harvard" and another sentence mentions "the Department of Chemistry", then we can use ```Part/Whole``` to make clear that it's Google's HR department, or that it's Harvard's Chemistry Department.  We do **not** need to link between, e.g. "Google" and its parent company "Alphabet", because they are both wikified (and therefore that relationship is presumably already known). 
+
+**Note that WHOLE/PART relationships are essentially hierarchical**
+
+These may theoretically have a whole chain of relationships (a hair is part of a dog, a dog is part of a pack, etc.).  If one sentence mentions "I hurt my left hand" and another sentence mentions "More specifically, my thumb hurts", you want to be able to capture that hierarchical structure -- that the thumb is part of the left hand, and that the left hand is part of the person.  If you capture those two whole/part relationships, you do not need to also capture that **thumb** is part  of **person**, because it's inferrable from the other relations.
+
 
 **Part/Whole is not for temporary or irrelevant spatial inclusion**
 
@@ -384,6 +385,11 @@ He opened the door
       :ARG0 (h / he)
       :ARG1 (d / door))
 ```
+
+**SET/Member relationships are also hierarchical**
+
+Remember that "set/member" is for both relating a set to a member and relating a set to a subset of a set.  You can assume that this is transitive.  In other words, If you have one mention of **all the employees of a company**, it might contain a subset such as **the employees that were rowdy at the company party**, and that might contain other subsets or members, such as **John**.  In that context, you don't need to relate **all the employees of a company** to **John** directly, as that's inferrable from the other subsets. 
+
 
 
 
