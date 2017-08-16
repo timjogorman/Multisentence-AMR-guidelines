@@ -183,11 +183,13 @@ We are focusing on making "IdentityChain" links between all concepts that refer 
 
 These IdentityChain elements can contain all instances of an identity chain, and we want you to focus on getting ALL coreferent variables into the same chain.  That includes both all variables and all "implicit argument" concepts. 
 
-In prototypical cases -- such as clearly anaphoric pronominal mentions, linking named entities, etc. -- this will be a clear case.  This will be more complicated when we get into implicit arguments, coreferent events, and other cases where its harder to concretely know "what is being referred to".  This document will contain a number of guidelines and edge cases, but we want you do remember that a fundamental guiding rule for this annotation is that we are trying to make this behave like normal, within-sentence AMR annotation. Because of that, follow the follow rule whenever your particular case is not handled in the guidelines:
+In prototypical cases -- such as clearly anaphoric pronominal mentions, linking named entities, etc. -- this will be a clear case.  This will be more complicated when we get into implicit arguments, coreferent events, and other cases where its harder to concretely know "what is being referred to".    This document will contain a number of guidelines and edge cases, but we want you do remember that a fundamental guiding rule for this annotation is that we are trying to make this behave like normal, within-sentence AMR annotation. Because of that, follow the follow rule whenever your particular case is not handled in the guidelines:
 
 **Universal Rule:** If in doubt, imagine that the sentences you are dealing with are all a giant run-on sentence.  Would you represent these using the same variable, using a re-entrancy?
 
 A number of special cases to keep track of are listed below:
+
+**If ambiguous, mark the identity:** Sometimes a referent will have two possible readings -- where it's legitimately unclear whether that referent refers to exactly the same referent as another mention or another identity chain.  If there is a possible reading where they are clearly identical, use that reading (and therefore link them together). 
 
 
 **Different "facets" of the same thing vs Subevent / Set-Member relations**
@@ -271,19 +273,18 @@ Your annotations should start with links between all wikified versions of the sa
 These documents may be pre-annotated with information from other annotation sources (often, coreference annotations over the same data).  While this information will often be correct, you do not need to blindly trust it.  In particular, for instances where a "span based" annotation was simply a relational noun or organizational role, such as "brother" or "president", the pre-annotations may accidentally link to those titles rather than to the person in question 
 
 
-
 **An "Identical" chain can't only have implicit mentions -- you need at least one non-implicit concept**
 
 You will run into instances where multiple implicit arguments clearly co-refer, but where there is no clear mention of who they refer to.  Do not go through and annotate these unless you have at least one non-implicit variable that is part of that chain.  
 
 
 **Don't link implict mentions to very broad general mentions**
---------------------------------------------------------------
+
 AMR annotations are full of concepts such as "recommend-01" (used for modal verbs like "should"), where the recommender isn't really clear, but might construed as being "people in  general recommend that...".  "John is funny" can be constued as "People find John funny".    It might be tempting, therefore, if you find a nice generic like "people" or "one" or "everyone", to link up all these implicit arguments to such as generic.  **Resist that urge!**.  Since that is a can of worms, consider it to be explicitly forbidden to link to such terms.
 
 
-**Don't link to implicit arguments of "grammatical" concets**
--------------------------------------------------------------
+**Don't link to implicit arguments of "grammatical" concepts**
+
 In AMR, we use terms like "recommend-01" and "contrast-01" to refer to very grammaticalized meanings introduced by discourse connectives and modal verbs.  Currently the tool may prompt you with rare arguments that only show up in the more explicit verbal forms -- so that when you see "but he should leave", the contrast-01 verb may provide an implicit "person making the contrast" or the "recommend-01" may provide arguments for who is being recommended to.   Normal within-sentence AMR annotator does not link to these arguments even when a candidate is available in the sentence, and we will therefore continue to not make that link across sentences.
 
 
@@ -320,21 +321,6 @@ We assume that such relationships are identifiable from a database, and you shou
 
 There are many times in AMR where one mentions things like "John and Mary to the store" or "China and Japan are competing".  You can assume that "and" loosely encodes a set/member relationship; you don't need to add "set/member" to all of our coordination instances, nor to add it between "they" and "John" in "John and Mary went to the store.  They bought a cat."
 
-**Marking "Sloppy anaphora" relations as member-member relations**
-
-You might be tempted to look at the following kinds of sentences and assume that "do so" or "one" are identical with prior reference.  But are they?:
-
-"Bill asked to be allowed to take the day off.  You should do that too."
-
-"Bill got a new Hyundai. Jane might get one too". 
-
-These are referred to in semantics under a variety of names such as "sloppy" or "same-type" anaphora.  In essence, while these *refer back* to a prior mention, they do not refer to the exact thing being referenced in the prior sentence.  In the first case, the asking event is the one in which Bill is the agent, and in which he is requesting that Bill be allowed to take the day off.  "Do that" postulates a new event with slightly different participants.  We therefore cannot call them the same event. 
-
-Similarly, the new Hyundai that Bill received can only refer to "one" if Jane may buy Bill's Hyundai; otherwise "one" means "another instance of the same type".  
-
-In order to handle these, we can use a tool you already have -- the "Set/Member" relationship.  Unlike other instances of set/member annotation, however, you do not have explicit mention of the "set" itself.  Instead, si	mply mark each item as a separate member, without an explicit set. 
-
-This kind of situation -- particularly with "do" anaphora or "one" -- should be the ONLY situation where you do not have "SuperSet" entry; do not speculate about other situations in which a member-member link might be added.
 
 
 Marking Part/Whole relations
@@ -393,8 +379,8 @@ Remember that "set/member" is for both relating a set to a member and relating a
 
 
 
-Instances of "Generic" wiki links
----------------------------------
+Wifified entities that are actually sets of individual instances (iPods, Camrys)
+--------------------------------------------------------------------------------
 
 Sometimes our "wiki" links will point to things that are not actually unique entities in the world, but are whole classes of things.  The most common of these will be product mentions such as "iPod", where mention of "my iPod" should not refer to owning the whole class of iPod products, but simply owning a single instance of an iPod.  In other words; if you have a discussion of people's different iPods, you may have many different identity chains, all of which have the same link to "iPod". 
 
@@ -538,8 +524,8 @@ But we left early
 In such a case, you **can** feel free to make a Set/Member or IdentityChain relationship referring to other mentions, assuming it passses the rules mentioned above. 
 
 
-Don't link up generics (that you wouldn't link in AMR)
-------------------------------------------------------
+Don't link up any generics that you wouldn't link in within-sentence AMR
+------------------------------------------------------------------------
 
 As a clear-cut example, look at the AMR for the following sentence, and note that we have two different monetary amounts, each in a unit of "dollar". Indeed, both mentions of dollar are referring to teh same thing -- the general idea of US dollars.  But we nevertheless don't corefer them -- it would be wrong to replace "d2 / dollar" with a mere re-entrant variable "d3":
 
@@ -566,7 +552,7 @@ The government 's borrowing authority dropped at midnight Tuesday to $ 2.80 tril
 
 We do not link these "dollar" elements.  While technically you might say that they are talking about the same generalized idea of dollars, nothing is added by linking them together. Another way to say this is that, since "dollar" is a generic word without need of context, coreference of "d3" and "d2" adds no information to our AMRs. 
 
-As a general rule, you can avoid coreferring things that are "generic", but you shouldn't be too strict about any exact definition of genericity; start with that definition and then try to calibrate to how this has been annotated in within-sentence AMR.  A good example of things that we are keeping slip are the two mentions of "economy" in the following AMR, used in "economic block" and "economic war":
+As a general rule, if a variable doesn't so much refer to a particular concept, but is an attribute referring to a domain of discussion, then we want to just ignore it.  A good example of things to ignore are the two variables referring to "economy" in the following AMR, used in "economic block" and "economic war":
 
 
 ```
@@ -610,6 +596,34 @@ There are far more important political and economical reasons for military inter
 			:op2  (s / sanction-02 
 				:ARG2  (p2 / politics))))) 
 ```
+
+For these kinds of mentions, like the units like "dollar" or "week", we can think of these as describing a **type**; "economic block" can be viewed as an answer to "what kind of block?".  While one might interpret "economy" with a specific reading (the think being blocked is their economy), that is a much less natural reading.  When we can view a concept as simply clarifying the type involved, you want to default to that reading, and not link it up in any way.   This will be particularly common for AMR variables that come from adjectives, such as "political", "financial", "economic", etc.  
+
+
+
+**Do** make coreference links between mentions to kinds of things -- and kinds of events -- when appropriate
+------------------------------------------------------------------------------------------------------------
+
+If you are reading a document about bananas, the general idea of bananas -- referring, more or less, to all bananas -- will often be mentioned.  As a general rule, we **do** want to capture such general mentions and link them  together (when they are referring to the same thing). Also, remember set/member links!  If you have a bunch of mentions of "red bananas", just make a separate identity chain for them and link it with a set/member link.  
+
+That means that if that document also has many mentions of a kind of event -- like debates about whether 'eating bananas' is good for you or whether 'eating bananas' is bad -- then we can think of 'eating bananas' as a generic event that is worth keeping track of, and getting its own identity chain.  
+
+One important caveat: Even if a phrase looks like an indefinite noun phrase, feel free to lump it together with a generic mention of that kind, if they can paraphrased in a general way.  For example, a sentence like "you need a driver's license if you want to drive a car" is not very different, semantically, from something like "people need drivers' licenses in order to be allowed to drive cars" -- so that "car" mention can be treated as a generic "car" class.  
+
+
+
+Differentiating between the two kinds of "generics"
+---------------------------------------------------
+
+Some kinds of vague referents -- like the mentions of "economy" coming out of "economic war", or the ":unit dollar" evoked by "$3" -- are things that we definitely don't want you to do anything with, and other thing that might be called "generic" -- like generic terms that are the topic of a discussion -- are worth focusing on.  How do you remember which is which? 
+
+**Unit arguments within a normalized measurement (monetary quantity, date-entity, distance-quantity, etc.) should never be coreferenced**
+
+The actual measurements themselves -- the monetary quantity, the distance, etc. -- might actually but referential.  Similarly, when an argument like "dollar" or "mile" is independent of those normalized quantites (e.g. in a sentences like "He was trading dollars for votes"), then they **can** end up being a worthwhile referent.  But a simple unit measurement is never referential. 
+
+**Coreferential "Generic" mentions should be discourse referential -- i.e., you could easily imagine a sentence using a pronoun (like "it" or "them") to refer to it**
+
+If we have an identity chain with a type -- such as "trucks" in "John only drives trucks"  -- we could imagine it being followed by another reference to that identity chain in which a pronoun is used, such as "Mary likes them too".  In contrast, a sentence whose AMR involves the general idea of a dollor ("John owes Bill 3$"), doesn't really license one to follow it with a pronominal mention to that dollar -- it would be weird to follow that sentence with "But he only has two of them".  
 
 
 
