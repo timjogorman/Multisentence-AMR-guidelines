@@ -642,6 +642,20 @@ One common additional situation is that a discourse will sometimes be referring 
 Follow the spirit of the law here.  Our goal is that we do want to capture general and abstract things **when they matter**, and to not be bogged down in linking together a bunch of attributes and modifiers that don't matter. When you are in doubt about decisions, default to capturing relations when they matter for understanding a document, and default to not capturing things when it's not really essential that they are coreferential. 
 
 
+Event Types, Generalizations and Descriptions of Roles
+------------------------------------------------------
+
+As mentioned in the prior section, you can feel free to link together different variables referring to the same class of events, when they are all generically referring to that whole class of events.  However, this can get complicated -- both in terms of modality, and participants.  
+
+**Don't lump together events with dramatically different participants**
+
+If one sentence discusses people owning guns and another sentence discusses criminals owning guns, those are different classes of events!  You can link them sometimes with Set/Member links, but don't try too hard to lump such characterizations together.
+
+**Think of lumping together all the participants, times and other labels when you co-refer events**
+With generic event characterizations, think of the same general practice you should often be doing with this: if this was a single AMR, would you feel comfortable actually making these points the exact same index?  If one event class has different times and conditions than others, then feel free to leave it separate.   
+
+
+
 "Redundant" relationships
 -------------------------
 
