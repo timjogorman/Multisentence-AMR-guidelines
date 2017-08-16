@@ -530,7 +530,7 @@ Generics: Reference to ideas, types and kinds of things
 -------------------------------------------------------
 
 
-There is a class of mentions that we generally don't treat as co-referential within AMR, and which we therefore don't want to treat as co-referential in multi-sentence AMR.  One clear-cut example of these are the "unit" arguments of quantity phases. Look at the AMR for the following sentence, and note that we have two different monetary amounts, each in a unit of "dollar". Indeed, both mentions of dollar are referring to teh same thing -- the general idea of US dollars.  But we nevertheless don't corefer them -- it would be wrong for an AMR annotator to replace "d2 / dollar" with a mere reentrant variable "d3":
+There is a class of mentions that we generally don't treat as co-referential within AMR, and which we therefore don't want to treat as co-referential in multi-sentence AMR.  One clear-cut example of these are the "unit" arguments of quantity phases. Look at the AMR for the following sentence, and note that we have two different monetary amounts, each in a unit of "dollar". Indeed, both mentions of dollar are referring to the same thing -- the general idea of US dollars.  But we nevertheless don't corefer them -- it would be wrong for an AMR annotator to replace "d2 / dollar" with a mere reentrant variable "d3".
 
 ```
 The government 's borrowing authority dropped at midnight Tuesday to $ 2.80 trillion from $ 2.87 trillion .
@@ -607,8 +607,8 @@ For these kinds of mentions, like the units like "dollar" or "week", we can thin
 
 If you are reading a document about bananas, you will encounter AMRs referring generally to bananas, as in "I love bananas".  As a general rule, we **do** want to capture such general mentions and link them  together (when they are referring to the same general idea).  The same idea also refers to kinds of events -- if there are many mentions of the general act of 'eating bananas' -- like debates about whether 'eating bananas' is good for you or whether 'eating bananas' is bad -- then we can think of 'eating bananas' as a generic event that is worth keeping track of, and linking together different eat-01 mentions together into an identity chain.  
 
+Even if a phrase looks like an indefinite noun phrase, feel free to lump it together with a generic mention of that kind, if the sentence can be paraphrased in a way that is referring to that whole kind of thing.  This happens with these tricky conditional phrases, such as "you need a driver's license if you want to drive a car" -- which is not very different, semantically, from something like "people need drivers' licenses in order to be allowed to drive cars".  **If you have a "generic" identity chain, and an AMR could paraphrased to use that "generic" identity chain, feel free to link to it.**
 
-One important caveat: Even if a phrase looks like an indefinite noun phrase, feel free to lump it together with a generic mention of that kind, if they can paraphrased in a general way.  For example, a sentence like "you need a driver's license if you want to drive a car" is not very different, semantically, from something like "people need drivers' licenses in order to be allowed to drive cars" -- so that "car" mention can be treated as a generic "car" class.  
 
 
 
@@ -619,11 +619,25 @@ Some kinds of vague referents -- like the mentions of "economy" coming out of "e
 
 **Unit arguments within a normalized measurement (monetary quantity, date-entity, distance-quantity, etc.) should never be coreferenced**
 
-The actual measurements themselves -- the monetary quantity, the distance, etc. -- might actually but referential.  Similarly, when an argument like "dollar" or "mile" is independent of those normalized quantites (e.g. in a sentences like "He was trading dollars for votes"), then they **can** end up being a worthwhile referent.  But a simple unit measurement is never referential. 
+The actual measurements themselves -- the monetary quantity, the distance, etc. -- might actually but referential.  Similarly, when an argument like "dollar" or "mile" is independent of those normalized quantites (e.g. in a sentences like "He was trading dollars for votes"), then they **can** end up being a worthwhile referent.  But when such mentions are within these quantities like monetary-quantity, date-entity, distance-quantity, etc., you can view them as out of bounds for reference. 
 
 **Coreferential "Generic" mentions should be discourse referential -- i.e., you could easily imagine a sentence using a pronoun (like "it" or "them") to refer to it**
 
 If we have an identity chain with a type -- such as "trucks" in "John only drives trucks"  -- we could imagine it being followed by another reference to that identity chain in which a pronoun is used, such as "Mary likes them too".  In contrast, a sentence whose AMR involves the general idea of a dollor ("John owes Bill 3$"), doesn't really license one to follow it with a pronominal mention to that dollar -- it would be weird to follow that sentence with "But he only has two of them".  
+
+**When it's possible to lump two mentions together as referring to the same whole class of things, then do so!**
+
+Generic references are often quite vague -- often one can make the argument that one generic mention is slightly different from the next.  It's easy to overthink it and figure out many very slightly different mentions to the same kind of thing.  When those differences are small but very clear -- such as having one identity chain that refers to "bananas" and another that refers to "red bananas" -- do feel free to divide them into different identity chains, and link things with Set/Member when you can.  **But** if various mentions are ambiguous between multiple readings, and one reading lets you lump it into a larger class of mentions, then go with that lumping reading. 
+
+
+**Ideas under discussion are always worth linking with identity chains**
+
+Follow the spirit of the law with these.  What we are aiming for is to capture abstract and generic concepts that matter -- that are being discussed and help make the discourse cohere -- without linking together a bunch of irrelevant modifiers and adjectives.  
+
+
+**For many situations with "generic" mentions, you can lump things together when in doubt**
+
+One common additional situation is that a discourse will sometimes be referring to a very class, constrained set, and the next sentence doesn't have that restriction.  For example, a document might be about lawyers in the US, and some of its sentences might just say "the laywers do X" without adding the same qualifiers every sentence.  If it feels like the intent of the author is to refer to the same set of mentions, then follow that intent and link them together, even if they aren't explicitly being described the same way.
 
 
 
