@@ -629,17 +629,17 @@ If we have an identity chain with a type -- such as "trucks" in "John only drive
 
 Generic references are often quite vague -- often one can make the argument that one generic mention is slightly different from the next.  It's easy to overthink it and figure out many very slightly different mentions to the same kind of thing.  When those differences are small but very clear -- such as having one identity chain that refers to "bananas" and another that refers to "red bananas" -- do feel free to divide them into different identity chains, and link things with Set/Member when you can.  **But** if various mentions are ambiguous between multiple readings, and one reading lets you lump it into a larger class of mentions, then go with that lumping reading. 
 
+**You can often treat mentions within a generalization or a conditional in the same way as generic mentions**
 
-**Ideas under discussion are always worth linking with identity chains**
-
-Follow the spirit of the law with these.  What we are aiming for is to capture abstract and generic concepts that matter -- that are being discussed and help make the discourse cohere -- without linking together a bunch of irrelevant modifiers and adjectives.  
-
+A sentence like "bananas are great" unambiguously refers to this generic idea of bananas, and something like "whenever someone has a banana they are getting potassium" is similar but slightly different.  For the sake of consistency, if something basically is making reference to a general class of items, lump it with other generic mentions of the term.
 
 **For many situations with "generic" mentions, you can lump things together when in doubt**
 
-One common additional situation is that a discourse will sometimes be referring to a very class, constrained set, and the next sentence doesn't have that restriction.  For example, a document might be about lawyers in the US, and some of its sentences might just say "the laywers do X" without adding the same qualifiers every sentence.  If it feels like the intent of the author is to refer to the same set of mentions, then follow that intent and link them together, even if they aren't explicitly being described the same way.
+One common additional situation is that a discourse will sometimes be referring to a very class, constrained set, and the next sentence doesn't have that restriction.  For example, a document might be about lawyers in the US, and some sentences might very clearly mention "US laywers are Y", and some sentences might just say "the laywers do X" without adding the same qualifiers.  If it really feels like the intent of the author is to refer to the same set of mentions, you can follow that intent and just lump things together.
 
+**Ideas under discussion are always worth linking with identity chains**
 
+Follow the spirit of the law here.  Our goal is that we do want to capture general and abstract things **when they matter**, and to not be bogged down in linking together a bunch of attributes and modifiers that don't matter. When you are in doubt about decisions, default to capturing relations when they matter for understanding a document, and default to not capturing things when it's not really essential that they are coreferential. 
 
 
 "Redundant" relationships
