@@ -3,33 +3,35 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Part I. Introduction](#part-i-introduction)
-  - [The Core Task](#the-core-task)
-  - [These are the same distinctions we make in normal AMR](#these-are-the-same-distinctions-we-make-in-normal-amr)
-  - [Walking through some examples](#walking-through-some-examples)
-  - [Starting with the Tool](#starting-with-the-Tool)
+  - [How AMR normally works:](#how-amr-normally-works)
+  - [This annotation extends that annotation across sentence boundaries](#this-annotation-extends-that-annotation-across-sentence-boundaries)
+  - [Additional Kind of Links](#additional-kind-of-links)
+  - [How this is done in ms-AMR annotation](#how-this-is-done-in-ms-amr-annotation)
+  - [Starting with the Tool](#starting-with-the-tool)
 - [Part II: General Guidelines](#part-ii-general-guidelines)
   - [Making Identical Relations](#making-identical-relations)
   - [Making Set/member relations](#making-setmember-relations)
   - [Marking Part/Whole relations](#marking-partwhole-relations)
-- [Part III: Details ](#part-iii-details)
+  - [Wifified entities that are actually sets of individual instances (iPods, Camrys)](#wifified-entities-that-are-actually-sets-of-individual-instances-ipods-camrys)
+- [Part III: Details](#part-iii-details)
   - [Discourse Phenomena](#discourse-phenomena)
-    - [Anaphora referring to a mentioned event](#anaphora-referring-to-a-mentioned-event)
-    - [Vague Discourse Demonstratives](#vague-discourse-demonstratives)
-    - [Vague Discourse Reference with Implicit Arguments](#vague-discourse-reference-with-implicit-arguments)
-  - [True generics (synonymous with "one","everyone") should not be linked to implicits](#true-generics-synonymous-with-oneeveryone-should-not-be-linked-to-implicits)
-  - [Don't link up generics (that you wouldn't link in AMR)](#dont-link-up-generics-that-you-wouldnt-link-in-amr)
+    - [Anaphoric Demonstratives and Discourse Anaphora, referring to a mentioned event(s)](#anaphoric-demonstratives-and-discourse-anaphora-referring-to-a-mentioned-events)
+  - [Generics: Reference to ideas, types and kinds of things](#generics-reference-to-ideas-types-and-kinds-of-things)
+  - [Additional hints for differentiating between the two kinds of "generics"](#additional-hints-for-differentiating-between-the-two-kinds-of-generics)
   - ["Redundant" relationships](#redundant-relationships)
     - [Redundant implicit arguments can be left out](#redundant-implicit-arguments-can-be-left-out)
   - [What Does a Variable Mean?](#what-does-a-variable-mean)
   - [How much can I consider modality?](#how-much-can-i-consider-modality)
 - [Part IV: Guides for Common Situations](#part-iv-guides-for-common-situations)
-  - [Have-org-role-91 and Have-rel-role-91](#have-org-role-and-have-rel-role)
+  - [Have-Org-Role and Have-rel-role](#have-org-role-and-have-rel-role)
 - [Part V: Handling Errors in the AMRs](#part-v-handling-errors-in-the-amrs)
+  - [Adding an "OpenIssues" link](#adding-an-openissues-link)
+  - [Correcting a "wiki" relation](#correcting-a-wiki-relation)
   - [AMR missed a within-sentence reentrancy](#amr-missed-a-within-sentence-reentrancy)
   - [AMR annotation has conflicting :wiki values for the same identity chain](#amr-annotation-has-conflicting-wiki-values-for-the-same-identity-chain)
   - [Removable components in equational clauses](#removable-components-in-equational-clauses)
   - [Decomposition Issues](#decomposition-issues)
-  - [Missing Boxes](#accidentally-deleting-those-colored-boxes)
+  - [Accidentally Deleting Those Colored Boxes](#accidentally-deleting-those-colored-boxes)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -524,10 +526,11 @@ But we left early
 In such a case, you **can** feel free to make a Set/Member or IdentityChain relationship referring to other mentions, assuming it passses the rules mentioned above. 
 
 
-Don't link up any generics that you wouldn't link in within-sentence AMR
-------------------------------------------------------------------------
+Generics: Reference to ideas, types and kinds of things
+-------------------------------------------------------
 
-As a clear-cut example, look at the AMR for the following sentence, and note that we have two different monetary amounts, each in a unit of "dollar". Indeed, both mentions of dollar are referring to teh same thing -- the general idea of US dollars.  But we nevertheless don't corefer them -- it would be wrong to replace "d2 / dollar" with a mere re-entrant variable "d3":
+
+There is a class of mentions that we generally don't treat as co-referential within AMR, and which we therefore don't want to treat as co-referential in multi-sentence AMR.  One clear-cut example of these are the "unit" arguments of quantity phases. Look at the AMR for the following sentence, and note that we have two different monetary amounts, each in a unit of "dollar". Indeed, both mentions of dollar are referring to teh same thing -- the general idea of US dollars.  But we nevertheless don't corefer them -- it would be wrong for an AMR annotator to replace "d2 / dollar" with a mere reentrant variable "d3":
 
 ```
 The government 's borrowing authority dropped at midnight Tuesday to $ 2.80 trillion from $ 2.87 trillion .
@@ -552,7 +555,7 @@ The government 's borrowing authority dropped at midnight Tuesday to $ 2.80 tril
 
 We do not link these "dollar" elements.  While technically you might say that they are talking about the same generalized idea of dollars, nothing is added by linking them together. Another way to say this is that, since "dollar" is a generic word without need of context, coreference of "d3" and "d2" adds no information to our AMRs. 
 
-As a general rule, if a variable doesn't so much refer to a particular concept, but is an attribute referring to a domain of discussion, then we want to just ignore it.  A good example of things to ignore are the two variables referring to "economy" in the following AMR, used in "economic block" and "economic war":
+This also occurs when concepts are very loosely evoked by adjectives in an AMR.  A good example of things to ignore are the two variables referring to "economy" in the following AMR, used in "economic block" and "economic war":
 
 
 ```
@@ -597,25 +600,22 @@ There are far more important political and economical reasons for military inter
 				:ARG2  (p2 / politics))))) 
 ```
 
-For these kinds of mentions, like the units like "dollar" or "week", we can think of these as describing a **type**; "economic block" can be viewed as an answer to "what kind of block?".  While one might interpret "economy" with a specific reading (the think being blocked is their economy), that is a much less natural reading.  When we can view a concept as simply clarifying the type involved, you want to default to that reading, and not link it up in any way.   This will be particularly common for AMR variables that come from adjectives, such as "political", "financial", "economic", etc.  
+For these kinds of mentions, like the units like "dollar" or "week", we can think of these as describing a **domain** of what is being referred to; "economic block" can be viewed as an answer to "what kind of block?", rather than referring either to a specific economy, or to a specific abstract idea of economies.  As a general rule, if a variable doesn't so much refer to a particular concept, but is an attribute referring to a domain of discussion, then we want to just ignore it.   Don't force an interpretation with a specific interpretation (i.e. imagining it's referring to a particular economy or a particular military) if the sentence doesn't seem to be referring to such a specific thing.  
 
 
+**But we DO make coreference links when referring to whole class of something**
 
-**Do** make coreference links between mentions to kinds of things -- and kinds of events -- when appropriate
-------------------------------------------------------------------------------------------------------------
+If you are reading a document about bananas, you will encounter AMRs referring generally to bananas, as in "I love bananas".  As a general rule, we **do** want to capture such general mentions and link them  together (when they are referring to the same general idea).  The same idea also refers to kinds of events -- if there are many mentions of the general act of 'eating bananas' -- like debates about whether 'eating bananas' is good for you or whether 'eating bananas' is bad -- then we can think of 'eating bananas' as a generic event that is worth keeping track of, and linking together different eat-01 mentions together into an identity chain.  
 
-If you are reading a document about bananas, the general idea of bananas -- referring, more or less, to all bananas -- will often be mentioned.  As a general rule, we **do** want to capture such general mentions and link them  together (when they are referring to the same thing). Also, remember set/member links!  If you have a bunch of mentions of "red bananas", just make a separate identity chain for them and link it with a set/member link.  
-
-That means that if that document also has many mentions of a kind of event -- like debates about whether 'eating bananas' is good for you or whether 'eating bananas' is bad -- then we can think of 'eating bananas' as a generic event that is worth keeping track of, and getting its own identity chain.  
 
 One important caveat: Even if a phrase looks like an indefinite noun phrase, feel free to lump it together with a generic mention of that kind, if they can paraphrased in a general way.  For example, a sentence like "you need a driver's license if you want to drive a car" is not very different, semantically, from something like "people need drivers' licenses in order to be allowed to drive cars" -- so that "car" mention can be treated as a generic "car" class.  
 
 
 
-Differentiating between the two kinds of "generics"
----------------------------------------------------
+Additional hints for differentiating between the two kinds of "generics"
+------------------------------------------------------------------------
 
-Some kinds of vague referents -- like the mentions of "economy" coming out of "economic war", or the ":unit dollar" evoked by "$3" -- are things that we definitely don't want you to do anything with, and other thing that might be called "generic" -- like generic terms that are the topic of a discussion -- are worth focusing on.  How do you remember which is which? 
+Some kinds of vague referents -- like the mentions of "economy" coming out of "economic war", or the ":unit dollar" evoked by "$3" -- are things that we definitely don't want you to do anything with, and actual references to classes of entities and classes of events **do** get coreferred.  This will sometimes be a tricky distinction, and you may need to simmple develop instincts about where to draw that line.  Here are some additional guides that might help in that approach:
 
 **Unit arguments within a normalized measurement (monetary quantity, date-entity, distance-quantity, etc.) should never be coreferenced**
 
@@ -661,7 +661,7 @@ This will show in our multi-sentence AMR Anafora annotations as:
            :ARG0 (i / implicit-biter_agent)
            :ARG1 (i2 / implicit-entity_bitten))
       :ARG1 (t / they))
-```      
+```
 If you have linked "bite-01" to the first "bite-01", we don't need to also add in this redudant information for the  ```:ARG0 (i / implicit-biter_agent)``` and ```:ARG1 (i2 / implicit-entity_bitten)```.  
 
 
