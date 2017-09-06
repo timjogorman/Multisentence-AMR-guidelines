@@ -18,12 +18,14 @@
     - [Anaphoric Demonstratives and Discourse Anaphora, referring to a mentioned event(s)](#anaphoric-demonstratives-and-discourse-anaphora-referring-to-a-mentioned-events)
   - [Generics: Reference to ideas, types and kinds of things](#generics-reference-to-ideas-types-and-kinds-of-things)
   - [Additional hints for differentiating between the two kinds of "generics"](#additional-hints-for-differentiating-between-the-two-kinds-of-generics)
+  - [Event Types, Generalizations and Descriptions of Roles](#event-types-generalizations-and-descriptions-of-roles)
   - ["Redundant" relationships](#redundant-relationships)
     - [Redundant implicit arguments can be left out](#redundant-implicit-arguments-can-be-left-out)
   - [What Does a Variable Mean?](#what-does-a-variable-mean)
   - [How much can I consider modality?](#how-much-can-i-consider-modality)
 - [Part IV: Guides for Common Situations](#part-iv-guides-for-common-situations)
   - [Have-Org-Role and Have-rel-role](#have-org-role-and-have-rel-role)
+  - [Various Flavors of "You" and "Anyone"](#various-flavors-of-you-and-anyone)
 - [Part V: Handling Errors in the AMRs](#part-v-handling-errors-in-the-amrs)
   - [Adding an "OpenIssues" link](#adding-an-openissues-link)
   - [Correcting a "wiki" relation](#correcting-a-wiki-relation)
@@ -600,12 +602,12 @@ There are far more important political and economical reasons for military inter
 				:ARG2  (p2 / politics))))) 
 ```
 
-For these kinds of mentions, like the units like "dollar" or "week", we can think of these as describing a **domain** of what is being referred to; "economic block" can be viewed as an answer to "what kind of block?", rather than referring either to a specific economy, or to a specific abstract idea of economies.  As a general rule, if a variable doesn't so much refer to a particular concept, but is an attribute referring to a domain of discussion, then we want to just ignore it.   Don't force an interpretation with a specific interpretation (i.e. imagining it's referring to a particular economy or a particular military) if the sentence doesn't seem to be referring to such a specific thing.  
+For these kinds of mentions, like the units like "dollar" or "week", we can think of these as describing a **domain** of what is being referred to; "economic block" can be viewed as an answer to "what kind of block?", rather than referring either to a specific economy, or to a specific abstract idea of economies.  As a general rule, if a variable doesn't so much refer to a particular concept, but is an attribute referring to a domain of discussion, then we want to just ignore it.  Don't force an interpretation with a specific interpretation (i.e. imagining it's referring to a particular economy or a particular military) if the sentence doesn't seem to be referring to such a specific thing.
 
 
 **But we DO make coreference links when referring to whole class of something**
 
-If you are reading a document about bananas, you will encounter AMRs referring generally to bananas, as in "I love bananas".  As a general rule, we **do** want to capture such general mentions and link them  together (when they are referring to the same general idea).  The same idea also refers to kinds of events -- if there are many mentions of the general act of 'eating bananas' -- like debates about whether 'eating bananas' is good for you or whether 'eating bananas' is bad -- then we can think of 'eating bananas' as a generic event that is worth keeping track of, and linking together different eat-01 mentions together into an identity chain.  
+If you are reading a document about bananas, you will encounter AMRs referring generally to bananas, as in "I love bananas".  As a general rule, we **do** want to capture such general mentions and link them  together (when they are referring to the same general idea).  The same idea also refers to kinds of events -- if there are many mentions of the general act of 'eating bananas' -- like debates about whether 'eating bananas' is good for you or whether 'eating bananas' is bad -- then we can think of 'eating bananas' as a generic event that is worth keeping track of, and linking together different eat-01 mentions together into an identity chain.
 
 Even if a phrase looks like an indefinite noun phrase, feel free to lump it together with a generic mention of that kind, if the sentence can be paraphrased in a way that is referring to that whole kind of thing.  This happens with these tricky conditional phrases, such as "you need a driver's license if you want to drive a car" -- which is not very different, semantically, from something like "people need drivers' licenses in order to be allowed to drive cars".  **If you have a "generic" identity chain, and an AMR could paraphrased to use that "generic" identity chain, feel free to link to it.**
 
@@ -794,6 +796,22 @@ Since these are so common, it's useful to remember a general rule: **you should 
 Another way to say this is that if two instances of ```have-org-role-91``` or ```have-rel-role-91``` are not in conflict, one can assume that they don't need to be explicitly linked.  This leads to the exception to that generalization: only worry about have-org-role-91 and have-rel-role-91 if there are different characterizations of the same relationship (usually: different ```:arg2``` roles).  If one sentence refers to Obama with the title of "Commander in Chief" and another with the title "president", then linking those two predicates with an identity relationship is needed.  **Otherwise, it is not needed.**
 
 Because of the above rules, the one common situation in which you will end up doing coreference annotation regarding ```have-org-role-91``` will be when a relationship is encoded both as a ```have-org-role-91``` relation in some sentences, and as a separate explicit predicate in others.  Predicates such as ```lead-02``` and ```manage-01``` can (and often should) be linked to their corresponding ```have-org-role-91``` relationships.  
+
+Various Flavors of "You" and "Anyone"
+-------------------------------------
+
+First of all, remember that we don't link together these broad 'people-in-general' mentions (like "people" or "everyone"), and therefore "you", when it has that reading, should just be left alone. This also will apply to imperative generalizations where the "you" is added -- e.g. the (y / you) that you would see in generalize proverbs such as "Never get involved in a land war in Asia". 
+
+Secondly, for discussion fora, we will often see "you" used to refer to the *general audience of people who might be reading a text*.   This can also involve phrases like "anybody" or "anyone", as in "does anyone has thoughts on this?", or "what do you guys think?".   When these refer to the whole set of everyone reading a particular document, we will treat these the same way we'd treat "what do people think?"  
+
+If a term is ambiguous between referring to a particular person in the discourse and a specific person, then **do** link to that specific referent.  "Do you really think so?", in context, might be read as being said either to a particular person or a specific person, or to some broader collection of people in the whole discussion, and sometimes you can't tell which one.  For the sake of consistency: if it's a plausible reading to interpret that "you" as a single referent, do it!
+
+For these usages of "anyone" and "someone", these can be very unspecified in a particular sentence, but can slowly become their own discourse referent.  For example, if you have a mention of "I was wondering if anyone could me move", it could lead to sentences like "they would need to come through the back", and "I'll pay you".  Again: because it's forming this much more specific referent over time, then you can link them together, including the initially vague references like "anyone".   
+
+
+
+
+
 
 Part V: Handling Errors in the AMRs
 ====================================
